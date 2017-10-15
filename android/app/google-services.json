@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "447663426170",
+    "firebase_url": "https://atudo-c792b.firebaseio.com",
+    "project_id": "atudo-c792b",
+    "storage_bucket": "atudo-c792b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447663426170:android:8ee80b32472e883c",
+        "android_client_info": {
+          "package_name": "com.atudo.picdata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447663426170-d094avfh7cdcer2cgquepbhpmd5bun8q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atudo.picdata",
+            "certificate_hash": "1ecc14d717327b9bd16e3e52b97462066ff43fc1"
+          }
+        },
+        {
+          "client_id": "447663426170-ofj7gp9505l9i3a3ll4n25sl7t81511p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atudo.picdata",
+            "certificate_hash": "a960bc1155692319513d25c39f6a60380339ba99"
+          }
+        },
+        {
+          "client_id": "447663426170-ejrp260blchmhlq52umasb37n5qnu827.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCYCVUZt_VszucufDPtGq90rvhWiPpsDnc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447663426170-ejrp260blchmhlq52umasb37n5qnu827.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

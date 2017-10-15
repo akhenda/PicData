@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pic Data</string>
+    <string name="facebook_app_id">907438962742946</string>
+    <string name="fb_login_protocol_scheme">fb907438962742946</string>
+</resources>

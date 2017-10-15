@@ -1,0 +1,102 @@
+diff --git a/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js b/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js
+index 8dc72cb..92907c7 100644
+--- a/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js
++++ b/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js
+@@ -6,7 +6,7 @@
+  * LICENSE file in the root directory of this source tree. An additional grant
+  * of patent rights can be found in the PATENTS file in the same directory.
+  *
+- * 
++ *
+  * @format
+  */
+ 
+@@ -16,26 +16,27 @@ const babel = require('babel-core');
+ const babylon = require('babylon');
+ 
+ /**
+-                                     * Extracts dependencies (module IDs imported with the `require` function) from
+-                                     * a string containing code. This walks the full AST for correctness (versus
+-                                     * using, for example, regular expressions, that would be faster but inexact.)
+-                                     *
+-                                     * The result of the dependency extraction is an de-duplicated array of
+-                                     * dependencies, and an array of offsets to the string literals with module IDs.
+-                                     * The index points to the opening quote.
+-                                     *
+-                                     * Note the technique of recognizing the identifier "require" is not proper
+-                                     * because it ignores that the scope may have reassigned or shadowed that value,
+-                                     * but it's a tradeoff for simplicity.
+-                                     */
++ * Extracts dependencies (module IDs imported with the `require` function) from
++ * a string containing code. This walks the full AST for correctness (versus
++ * using, for example, regular expressions, that would be faster but inexact.)
++ *
++ * The result of the dependency extraction is an de-duplicated array of
++ * dependencies, and an array of offsets to the string literals with module IDs.
++ * The index points to the opening quote.
++ *
++ * Note the technique of recognizing the identifier "require" is not proper
++ * because it ignores that the scope may have reassigned or shadowed that value,
++ * but it's a tradeoff for simplicity.
++ */
+ function extractDependencies(code) {
+   const ast = babylon.parse(code);
+   const dependencies = new Set();
+   const dependencyOffsets = [];
+ 
+-  function pushDependency(nodeArgs) {
++  function pushDependency(nodeArgs, parentType) {
+     const arg = nodeArgs[0];
+     if (nodeArgs.length != 1 || arg.type !== 'StringLiteral') {
++      if (parentType === 'TryStatement') return;
+       throw new Error('require() must have a single string literal argument');
+     }
+     dependencyOffsets.push(arg.start);
+@@ -47,7 +48,7 @@ function extractDependencies(code) {
+       const node = path.node;
+       const callee = node.callee;
+       if (callee.type === 'Identifier' && callee.name === 'require') {
+-        pushDependency(node.arguments);
++        pushDependency(node.arguments, path.scope.parentBlock.type);
+       }
+       if (callee.type !== 'MemberExpression') {
+         return;
+@@ -62,7 +63,7 @@ function extractDependencies(code) {
+       {
+         pushDependency(node.arguments);
+       }
+-    } });
++    }});
+ 
+ 
+   return { dependencyOffsets, dependencies: Array.from(dependencies) };
+diff --git a/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js.flow b/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js.flow
+index b38dc44..024855d 100644
+--- a/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js.flow
++++ b/node_modules/metro-bundler/src/JSTransformer/worker/extract-dependencies.js.flow
+@@ -33,9 +33,13 @@ function extractDependencies(code: string) {
+   const dependencies = new Set();
+   const dependencyOffsets = [];
+ 
+-  function pushDependency(nodeArgs) {
++  function pushDependency(nodeArgs, parentType) {
+     const arg = nodeArgs[0];
+     if (nodeArgs.length != 1 || arg.type !== 'StringLiteral') {
++      // Dynamic requires directly inside of a try statement are considered optional dependencies
++      if (parentType === 'TryStatement') {
++        return;
++      }
+       throw new Error('require() must have a single string literal argument');
+     }
+     dependencyOffsets.push(arg.start);
+@@ -46,8 +50,9 @@ function extractDependencies(code: string) {
+     CallExpression(path) {
+       const node = path.node;
+       const callee = node.callee;
++      const parent = path.scope.parentBlock;
+       if (callee.type === 'Identifier' && callee.name === 'require') {
+-        pushDependency(node.arguments);
++        pushDependency(node.arguments, parent.type);
+       }
+       if (callee.type !== 'MemberExpression') {
+         return;
