@@ -35,7 +35,6 @@ class Login extends Component {
     this.ismounted = true;
     this.unsubscribe = User.isUserSignedIn({
       onSuccess: (data) => {
-        // console.log('Unsubscribe Data:', data);
         if (this.ismounted) this.setState({ user: data.user });
       },
       onError: (error) => {
@@ -76,7 +75,6 @@ class Login extends Component {
     return false;
   }
 
-  /* eslint-disable class-methods-use-this */
   goToSignUp() {
     Actions.SignUp();
   }
@@ -96,9 +94,9 @@ class Login extends Component {
       title,
       message,
       [
-        { text: 'Ask me later', onPress: () => { /* console.log('Ask me later pressed') */ } },
-        { text: 'Cancel', onPress: () => { /* console.log('Cancel Pressed') */ }, style: 'cancel' },
-        { text: 'OK', onPress: () => { /* console.log('OK Pressed') */ } },
+        { text: 'Ask me later', onPress: () => null },
+        { text: 'Cancel', onPress: () => null, style: 'cancel' },
+        { text: 'OK', onPress: () => null },
       ],
       { cancelable: false },
     );
@@ -155,7 +153,6 @@ class Login extends Component {
               });
             },
           });
-          // console.log('User wa Phone:', confirmedUser);
         })
         .catch(error => this.setState({
           message: `Code Confirm Error: ${error.message}`,
@@ -173,7 +170,6 @@ class Login extends Component {
     User.facebookLogin({
       data: true,
       onSuccess: () => {
-        // console.log('handleFacebookLogin user: ', user);
         // this.setState({ user, facebookLoggingIn: false });
       },
       onError: () => {

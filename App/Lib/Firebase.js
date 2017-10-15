@@ -1,6 +1,5 @@
 import firebase from 'react-native-firebase';
 import { FirebaseKeys } from '../Config';
-// import * as Firebase from "firebase";
 
 const config = {
   apiKey: FirebaseKeys.FIREBASE_API_KEY,

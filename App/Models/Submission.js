@@ -1,9 +1,4 @@
-import RNFetchBlob from 'react-native-fetch-blob';
 import { Firebase } from '../Lib';
-
-const { polyfill } = RNFetchBlob;
-// const storageRef = Firebase.storage().ref('images');
-// window.Blob = polyfill.Blob
 
 
 function submitItem(options) {
@@ -20,13 +15,10 @@ function submitItem(options) {
         // total number of bytes to be uploaded
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         options.onProgress(progress);
-        // console.log(`Upload is ${progress}% done`);
         switch (snapshot.state) {
           case Firebase.storage.TaskState.PAUSED: // or 'paused'
-            // console.log('Upload is paused');
             break;
           case Firebase.storage.TaskState.RUNNING: // or 'running'
-            // console.log('Upload is running');
             break;
           default:
             break;
@@ -37,18 +29,17 @@ function submitItem(options) {
       }, (snapshot) => {
         // Handle successful uploads on complete
         // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-        // console.log('snapshot: ', snapshot);
         const url = snapshot.downloadURL;
         submissionData.image_url = url;
         Firebase.database().ref().child('submissions').push(submissionData)
           .then((data) => {
-            options.onSuccess();
+            options.onSuccess({ data });
           });
       });
   } else {
     Firebase.database().ref().child('submissions').push(submissionData)
       .then((data) => {
-        options.onSuccess();
+        options.onSuccess({ data });
       });
   }
 }

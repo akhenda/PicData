@@ -34,9 +34,6 @@ function loginUser(user) {
     if (snapshot.val() !== null) {
       const userProfile = snapshot.val().profile;
       userProfile.id = user.uid;
-      // setCurrentUser(userProfile);
-    } else {
-      // Actions.ProfileCompletion({ user_id: user.uid });
     }
   });
   return true;
@@ -49,7 +46,6 @@ function signUpWithEmail(options) {
     .then(
       user => this.saveUser(user, options),
       (error) => {
-        // const errorCode = error.code;
         const errorMessage = error.message;
         options.onError({ message: errorMessage });
       },
@@ -65,7 +61,6 @@ function signInWithEmail(options) {
         options.onSuccess({ user });
       },
       (error) => {
-        // const errorCode = error.code;
         const errorMessage = error.message;
         options.onError({ message: errorMessage });
       },
@@ -80,7 +75,6 @@ function signInWithPhone(options) {
       options.onSuccess({ confirmResult });
     })
     .catch((error) => {
-      // console.log('Error: ', error);
       options.onError({ message: error.message });
     });
 }
@@ -132,7 +126,6 @@ function isCheckedIn(options) {
       }
     },
     onError: (error) => {
-      // console.error(error);
       options.onError({ message: error.message });
     },
   });
@@ -151,7 +144,6 @@ function checkIn(options) {
       }
     },
     onError: (error) => {
-      // console.error(error);
       options.onError({ message: error.message });
     },
   });
@@ -180,9 +172,8 @@ function getFacebookUserInfo(options) {
     },
   }, (err, res) => {
     options.onSuccess({ user: res });
-    // console.log('GraphRequest Res: ', res);
   });
-  // console.log('GraphRequest Req: ', req);
+
   new GraphRequestManager().addRequest(req).start();
 }
 
@@ -190,42 +181,34 @@ function handleFirebaseLogin(accessToken, user, options) {
   Firebase.auth()
     .signInWithCredential(accessToken)
     .then((data) => {
-      // console.log('handleFirebaseLogin Data: ', data);
       const userData = {
         name: user.name,
         email: user.email || '',
       };
-      // console.log('handleFirebaseLogin userData: ', userData);
-      // console.log('handleFirebaseLogin user: ', user);
       Firebase.database().ref(`users/${data.uid}`).set(userData).then(() => {
         options.onSuccess({ user });
       });
     })
     .catch((error) => {
-      // options.onError();
       options.onError({ message: error.message });
-      // console.log('Error: ', error);
     });
 }
 
 function facebookLogin(options) {
   if (options) {
     LoginManager.logInWithReadPermissions(['public_profile', 'email']).then((result) => {
-      // console.log('Result: ', result);
       if (result.isCancelled) {
         ToastAndroid.show('Login cancelled!', ToastAndroid.SHORT);
         options.onError({ message: 'Login cancelled!' });
       } else {
         AccessToken.getCurrentAccessToken().then((data) => {
           const accessToken = Firebase.auth.FacebookAuthProvider.credential(data.accessToken);
-          // console.log('AccessToken: ', accessToken);
           getFacebookUserInfo({
             data: {
               accessToken: data.accessToken,
             },
             onSuccess: (extraData) => {
               const { user } = extraData;
-              // console.log('User: ', user);
               handleFirebaseLogin(accessToken, user, options);
             },
           });
@@ -239,16 +222,13 @@ function updateUserInfo(options) {
   const user = firebase.auth().currentUser;
   if (options) {
     user.updateEmail(options.data.email)
-      .then((data) => {
-        // console.log(data);
+      .then(() => {
         user.updateProfile({ displayName: options.data.name, photoUrl: '' })
-          .then((moreData) => {
-            // console.log(moreData);
+          .then(() => {
             user.updatePassword(options.data.password)
-              .then((extraData) => {
-                // console.log('Extra Data: ', extraData);
+              .then((data) => {
                 const userData = {
-                  email: extraData.email,
+                  email: data.email,
                   name: options.data.name,
                 };
                 Firebase.database().ref(`/users/${user.uid}`).set(userData).then(() => {
@@ -256,17 +236,14 @@ function updateUserInfo(options) {
                 });
               })
               .catch((extraError) => {
-                // console.log(extraError);
                 options.onError({ extraError });
               });
           })
           .catch((anotherError) => {
-            // console.log(anotherError);
             options.onError({ anotherError });
           });
       })
       .catch((error) => {
-        // console.log(error);
         options.onError({ error });
       });
   }

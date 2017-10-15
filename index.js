@@ -5,7 +5,9 @@
  */
 
 import React, { Component } from 'react';
-import { StyleSheet, AppRegistry, ActivityIndicator, BackHandler } from 'react-native';
+import {
+  StyleSheet, AppRegistry, ActivityIndicator, BackHandler, StatusBar, View,
+} from 'react-native';
 
 import { Scene, Router } from 'react-native-router-flux';
 import FCM, { FCMEvent } from 'react-native-fcm';
@@ -52,7 +54,6 @@ export default class CheckIn extends Component {
     this.ismounted = true;
     FCM.requestPermissions(); // for iOS
     FCM.getFCMToken().then(() => {
-      // console.log(token);
       // store fcm token in your server
     });
     this.notificationListener = FCM.on(FCMEvent.Notification, (notif) => {
@@ -66,7 +67,6 @@ export default class CheckIn extends Component {
       }
     });
     this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, () => {
-      // console.log(token);
       // fcm token may not be available on first load, catch it here
     });
     FCM.subscribeToTopic('messages');
@@ -91,27 +91,30 @@ export default class CheckIn extends Component {
       );
     }
     return (
-      <Router>
-        <Scene key="root">
-          <Scene
-            key="Home"
-            component={Home}
-            initial={this.state.authenticated}
-            title="Home"
-            hideNavBar
-          />
-          <Scene
-            key="Login"
-            component={Login}
-            initial={!this.state.authenticated}
-            title="Login"
-            hideNavBar
-          />
-          <Scene key="Profile" component={Profile} title="Profile" hideNavBar />
-          <Scene key="SignUp" component={SignUp} title="Sign Up" hideNavBar />
-          <Scene key="Messenger" component={Messenger} hideNavBar={false} title="Messenger" />
-        </Scene>
-      </Router>
+      <View style={{ flex: 1 }}>
+        <StatusBar translucent backgroundColor="rgba(145,70,167,0.8)" />
+        <Router>
+          <Scene key="root">
+            <Scene
+              key="Home"
+              component={Home}
+              initial={this.state.authenticated}
+              title="Home"
+              hideNavBar
+            />
+            <Scene
+              key="Login"
+              component={Login}
+              initial={!this.state.authenticated}
+              title="Login"
+              hideNavBar
+            />
+            <Scene key="Profile" component={Profile} title="Profile" hideNavBar />
+            <Scene key="SignUp" component={SignUp} title="Sign Up" hideNavBar />
+            <Scene key="Messenger" component={Messenger} hideNavBar={false} title="Messenger" />
+          </Scene>
+        </Router>
+      </View>
     );
   }
 }
