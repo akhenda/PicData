@@ -192,9 +192,13 @@ class Home extends Component {
     
     ImagePicker.launchCamera(fileOptions, (response) => {
       if (response.didCancel) {
-        // do something
+        // Turn Location updates on again and start listening
+        this.subscribeToLocation();
+        this.subscribeToLocationErrors();
       } else if (response.error) {
-        // do another thing
+        // Turn Location updates on again and start listening
+        this.subscribeToLocation();
+        this.subscribeToLocationErrors();
       } else {
         this.setState({ file: response });
       }

@@ -1,12 +1,12 @@
+import Config from 'react-native-config';
 import firebase from 'react-native-firebase';
-import { FirebaseKeys } from '../Config';
 
 const config = {
-  apiKey: FirebaseKeys.FIREBASE_API_KEY,
-  authDomain: FirebaseKeys.AUTH_DOMAIN,
-  databaseURL: FirebaseKeys.DATABASE_URL,
-  storageBucket: FirebaseKeys.STORAGE_BUCKET,
-  messagingSenderId: FirebaseKeys.MESSAGING_SENDER_ID,
+  apiKey: Config.FIREBASE_API_KEY,
+  authDomain: Config.AUTH_DOMAIN,
+  databaseURL: Config.DATABASE_URL,
+  storageBucket: Config.STORAGE_BUCKET,
+  messagingSenderId: Config.MESSAGING_SENDER_ID,
 };
 
 firebase.initializeApp(config);

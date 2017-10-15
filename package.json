@@ -26,6 +26,7 @@
     "react": "16.0.0-beta.5",
     "react-native": "0.49.3",
     "react-native-android-location-services-dialog-box": "^2.2.1",
+    "react-native-config": "^0.8.1",
     "react-native-exit-app": "^1.0.0",
     "react-native-fbsdk": "^0.6.1",
     "react-native-fcm": "^10.0.0",
