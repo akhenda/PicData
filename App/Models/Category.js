@@ -11,7 +11,6 @@ function getCategories(options) {
           user.uid = userKey;
           Firebase.database().ref('categories').once('value').then((snap1) => {
             if (snap1 != null) {
-              // options.onSuccess({categories: snap.val()});
               Firebase.database().ref('sub-categories').once('value').then((snap2) => {
                 if (snap2 != null) {
                   options.onSuccess({

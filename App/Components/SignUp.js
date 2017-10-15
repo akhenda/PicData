@@ -36,9 +36,9 @@ class SignUp extends Component {
             'Signup Error',
             data.message,
             [
-              { text: 'Ask me later', onPress: () => { /* console.log('Ask me later pressed') */ } },
-              { text: 'Cancel', onPress: () => { /* console.log('Cancel Pressed') */ }, style: 'cancel' },
-              { text: 'OK', onPress: () => { /* console.log('OK Pressed') */ } },
+              { text: 'Ask me later', onPress: () => null },
+              { text: 'Cancel', onPress: () => null, style: 'cancel' },
+              { text: 'OK', onPress: () => null },
             ],
             { cancelable: false },
           );

@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
@@ -9,6 +10,9 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+
+/* Variables */
+ext.currentUser = System.getenv("USER")
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -38,7 +42,7 @@ def getPassword(String currentUser, String keyChain) {
       stdout.toString().trim()
 }
 
-def pass = getPassword("Joseph Akhenda","picdata_keystore")
+def pass = getPassword(currentUser, "picdata_keystore")
 
 android {
     compileSdkVersion 23
@@ -62,9 +66,9 @@ android {
         release {
             if (project.hasProperty('PICDATA_STORE_FILE')) {
                 storeFile file(PICDATA_STORE_FILE)
-                storePassword PICDATA_STORE_PASSWORD
+                storePassword project.env.get("PICDATA_STORE_PASSWORD")
                 keyAlias PICDATA_KEY_ALIAS
-                keyPassword PICDATA_KEY_PASSWORD
+                keyPassword project.env.get("PICDATA_KEY_PASSWORD")
             }
         }
     }
@@ -103,6 +107,7 @@ repositories {
 }
 
 dependencies {
+    compile project(':react-native-config')
     compile project(':react-native-fused-location')
     compile project(':react-native-geocoder')
     compile project(':react-native-image-picker')

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.util.Log;
 
 import com.facebook.react.ReactApplication;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.mustansirzia.fused.FusedLocationPackage;
 import com.devfd.RNGeocoder.RNGeocoderPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -46,6 +47,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ReactNativeConfigPackage(),
             new FusedLocationPackage(),
             new RNGeocoderPackage(),
             new ImagePickerPackage(),

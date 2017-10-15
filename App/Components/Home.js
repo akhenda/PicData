@@ -98,7 +98,6 @@ class Home extends Component {
         }
       })
       .catch(() => {
-        // console.log('Quit Error: ', error.message);
         RNExitApp.exitApp();
       });
     
@@ -134,15 +133,13 @@ class Home extends Component {
     this.setState(() => ({ locationUpdates: true }));
 
     // Place listeners.
-    this.subscription = FusedLocation.on('fusedLocation', (loc) => {
-      // console.log(loc);
-      this.saveLocation(loc);
+    this.subscription = FusedLocation.on('fusedLocation', (location) => {
+      this.saveLocation(location);
     }); 
   }
   
   subscribeToLocationErrors() {
     this.errSubscription = FusedLocation.on('fusedLocationError', (error) => {
-      // console.warn(error);
       if (this.ismounted) {
         this.setState({ 
           error: true,
@@ -153,16 +150,13 @@ class Home extends Component {
   }
   
   saveLocation(location) {
-    // console.log('Location Updates: ', this.state.locationUpdates);
     if (this.state.locationUpdates) {
       Geocoder.geocodePosition({
         lat: location.latitude,
         lng: location.longitude,
       }).then((geocodedLocation) => {
-        // console.log('Geocoded Location: ', geocodedLocation);
         this.setState(() => ({ location, geocodedLocation }));
       }).catch((error) => {
-        // console.log(error);
         this.setState(() => ({ 
           error: true,
           message: error.message ? error.message : 'Unknown Error!',
@@ -172,7 +166,6 @@ class Home extends Component {
   }
 
   logout() {
-    // this.setState({ modalVisible: true });
     User.logoutUser({
       onSuccess: (data) => {
         if (data.loggedOut) {
@@ -198,12 +191,14 @@ class Home extends Component {
     this.getLocationThenStopUpdates();
     
     ImagePicker.launchCamera(fileOptions, (response) => {
-      // console.log('Response = ', response);
-
       if (response.didCancel) {
-        // console.log('User cancelled file picker');
+        // Turn Location updates on again and start listening
+        this.subscribeToLocation();
+        this.subscribeToLocationErrors();
       } else if (response.error) {
-        // console.log('FilePickerManager Error: ', response.error);
+        // Turn Location updates on again and start listening
+        this.subscribeToLocation();
+        this.subscribeToLocationErrors();
       } else {
         this.setState({ file: response });
       }
@@ -230,8 +225,6 @@ class Home extends Component {
         geo_location: geocodedLocation,
         sender_id: user.uid,
       };
-
-      // console.log('Our Data: ', data);
 
       Submission.submitItem({
         data,
@@ -303,7 +296,6 @@ class Home extends Component {
   }
 
   renderUser() {
-    // console.log('renderUser User: ', this.state.user);
     return <CheckIn user={this.state.user} />;
   }
   
@@ -340,7 +332,6 @@ class Home extends Component {
           >
             <Picker.Item label="---" value={undefined} />
             {Object.keys(items).map((cat) => {
-              // console.log(cat);
               return <Picker.Item key={cat} label={items[cat].display} value={items[cat]} />;
             })}
           </Picker>
@@ -439,7 +430,6 @@ class Home extends Component {
     const {
       categories, subcategories, loading, error, submitting,
     } = this.state;
-    // console.log('Position: ', this.state.location);
     if (loading) {
       return this.activityIndicator();
     } else if (error) {
